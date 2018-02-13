@@ -1,4 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin'); 
+
 module.exports = {
     entry: "./src/index.tsx",
     output: {
@@ -20,7 +22,22 @@ module.exports = {
             { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
 
             // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" },
+            
+            { 
+                test: /\.scss?$/,
+                use: ExtractTextPlugin.extract({
+                    use: [
+                        {
+                            loader: "css-loader",
+                            options: {
+                                minimize: true
+                            }
+                        },
+                        "sass-loader"
+                    ]
+                })
+            }
         ]
     },
     // When importing a module whose path matches one of the following, just
@@ -34,6 +51,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './index.html'
-        })
+        }),
+        new ExtractTextPlugin("style.css")
     ]
 };
